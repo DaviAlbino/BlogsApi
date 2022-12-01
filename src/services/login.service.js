@@ -9,9 +9,6 @@ const insertLogin = async (email, password) => {
         },
     });
 
-    // console.log('password: ', password);
-    // console.log('userPassword: ', user.password);
-
     if (!user || user.password !== password) {
         return { type: 400, message: 'Invalid fields' };
     }
