@@ -6,6 +6,7 @@ const tokenMiddleware = require('../middlewares/tokenMiddleware');
 
 const postRouter = express.Router();
 
+postRouter.post('/', tokenMiddleware, postController.createPost);
 postRouter.get('/', tokenMiddleware, postController.findAllPosts);
 postRouter.get('/:id', tokenMiddleware, postController.findPostById);
 postRouter.put('/:id', tokenMiddleware, postController.updatePost);

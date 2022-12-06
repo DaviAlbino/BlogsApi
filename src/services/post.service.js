@@ -65,8 +65,30 @@ const updatePost = async (body, id, user) => {
     return { type: null, message: post };
 };
 
+// const createPost = async (id, title, content, categoryIds) => {
+//     const { count } = await Category.findAndCountAll({ where: { id: categoryIds } });
+//     if (categoryIds.length !== count) {
+//         return { type: 400, message: 'one or more "categoryIds" not found' };
+//     }
+
+//     const { dataValues } = await BlogPost.create({
+//         title,
+//         content,
+//         published: new Date(),
+//         updated: new Date(),
+//         userId: id,
+//     });
+
+//     await categoryIds.map(async (categoryId) => {
+//         await PostCategory.create({ postId: dataValues.id, categoryId });
+//     });
+
+//     return { type: null, message: dataValues };
+// };
+
 module.exports = {
     findAllPosts,
     findPostById,
     updatePost,
+    // createPost,
 };
