@@ -80,8 +80,6 @@ const createPost = async (id, title, content, categoryIds) => {
         userId: id,
     });
 
-    // console.log('categoryIds: ', categoryIds);
-
     await Promise.all(categoryIds.map((categoryId) => PostCategory
     .create({ postId: dataValues.id, categoryId })));
 
@@ -105,10 +103,26 @@ const findBySearch = async (query) => {
     return searchPosts;
 };
 
+const deletePost = async (id, user) => {
+    const userByid = await BlogPost.findByPk(id, { where: { user } });
+
+    if (!userByid) {
+        return { type: 404, message: 'Post does not exist' };
+    }
+    if (userByid.dataValues.userId !== user) {
+        return { type: 401, message: 'Unauthorized user' };
+    }
+
+    await BlogPost.destroy({ where: { id } });
+
+    return { type: null, message: '' };
+};
+
 module.exports = {
     findAllPosts,
     findPostById,
     updatePost,
     findBySearch,
     createPost,
+    deletePost,
 };
