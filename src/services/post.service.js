@@ -1,5 +1,5 @@
 const { Op } = require('sequelize');
-const { BlogPost, User, Category } = require('../models');
+const { BlogPost, User, Category, PostCategory } = require('../models');
 
 const findAllPosts = async () => {
     const postList = BlogPost.findAll({
@@ -66,26 +66,27 @@ const updatePost = async (body, id, user) => {
     return { type: null, message: post };
 };
 
-// const createPost = async (id, title, content, categoryIds) => {
-//     const { count } = await Category.findAndCountAll({ where: { id: categoryIds } });
-//     if (categoryIds.length !== count) {
-//         return { type: 400, message: 'one or more "categoryIds" not found' };
-//     }
+const createPost = async (id, title, content, categoryIds) => {
+    const { count } = await Category.findAndCountAll({ where: { id: categoryIds } });
+    if (categoryIds.length !== count) {
+        return { type: 400, message: 'one or more "categoryIds" not found' };
+    }
 
-//     const { dataValues } = await BlogPost.create({
-//         title,
-//         content,
-//         published: new Date(),
-//         updated: new Date(),
-//         userId: id,
-//     });
+    const { dataValues } = await BlogPost.create({
+        title,
+        content,
+        published: new Date(),
+        updated: new Date(),
+        userId: id,
+    });
 
-//     await categoryIds.map(async (categoryId) => {
-//         await PostCategory.create({ postId: dataValues.id, categoryId });
-//     });
+    // console.log('categoryIds: ', categoryIds);
 
-//     return { type: null, message: dataValues };
-// };
+    await Promise.all(categoryIds.map((categoryId) => PostCategory
+    .create({ postId: dataValues.id, categoryId })));
+
+    return { type: null, message: dataValues };
+};
 
 const findBySearch = async (query) => {
     const searchPosts = await BlogPost.findAll({
@@ -109,5 +110,5 @@ module.exports = {
     findPostById,
     updatePost,
     findBySearch,
-    // createPost,
+    createPost,
 };
